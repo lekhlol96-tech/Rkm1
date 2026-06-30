@@ -8,17 +8,20 @@
             margin: 0;
             padding: 20px;
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
             min-height: 100vh;
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        h1 { margin-bottom: 20px; }
+        h1 { margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* Прокрутка, если таблица широкая */
+        }
         table {
-            width: 90%;
-            max-width: 1000px;
+            width: 100%;
             border-collapse: collapse;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -27,47 +30,52 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
         th, td {
-            padding: 15px;
-            text-align: left;
+            padding: 12px 15px;
+            text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
         }
-        th { background-color: rgba(255, 255, 255, 0.2); text-transform: uppercase; }
+        th { background-color: rgba(255, 255, 255, 0.2); font-size: 0.9em; }
         tr:hover { background-color: rgba(255, 255, 255, 0.1); }
     </style>
 </head>
 <body>
 
     <h1>Производственный журнал</h1>
-    <table id="data-table">
-        <thead>
-            <tr>
-                <th>Дата</th>
-                <th>Заказчик</th>
-                <th>Диаметр</th>
-                <th>Количество</th>
-                <th>Температура</th>
-            </tr>
-        </thead>
-        <tbody id="table-body">
-            </tbody>
-    </table>
+    <div class="table-container">
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Дата</th><th>Заказчик</th><th>Ø Исходный</th><th>Ø Готовый</th>
+                    <th>Кол-во</th><th>Подпись</th><th>Марка</th>
+                    <th>Темп.</th><th>Выдержка</th><th>Программа</th><th>Режим</th><th>П</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
 
     <script>
-        // Вставьте сюда вашу ссылку на CSV файл (из Google Таблиц)
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv';
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv'; // ВСТАВЬТЕ ССЫЛКУ СЮДА
 
         fetch(csvUrl)
             .then(response => response.text())
             .then(data => {
-                const rows = data.split('\n').slice(1); // Пропускаем заголовок таблицы
+                const rows = data.split('\n').slice(1);
                 const tableBody = document.getElementById('table-body');
                 
                 rows.forEach(row => {
                     const cols = row.split(',');
-                    if (cols.length >= 5) {
+                    if (cols.length >= 12) {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td>${cols[1]}</td> <td>${cols[2]}</td> <td>Ø ${cols[3]}</td> <td>${cols[4]} шт.</td> <td>${cols[5]} °C</td> `;
+                            <td>${cols[1]}</td><td>${cols[2]}</td>
+                            <td>Ø ${cols[3]}</td><td>Ø ${cols[4]}</td>
+                            <td>${cols[5]} шт.</td><td>${cols[6]}</td>
+                            <td>${cols[7]}</td><td>${cols[8]} °C</td>
+                            <td>${cols[9]}</td><td>${cols[10]}</td>
+                            <td>${cols[11]}</td><td>${cols[12]}</td>
+                        `;
                         tableBody.appendChild(tr);
                     }
                 });
