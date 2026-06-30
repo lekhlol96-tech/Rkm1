@@ -55,28 +55,28 @@
         </table>
     </div>
 
-    <script>
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv'; 
+        <script>
+        const csvUrl = 'ВАША_ССЫЛКА_НА_CSV'; // Не забудьте вставить ссылку!
 
         fetch(csvUrl)
             .then(response => response.text())
             .then(data => {
                 const lines = data.split('\n');
-                const headers = lines[0].split(',');
-                
-                // Выводим заголовки прямо на страницу для проверки
+                const rows = lines.slice(1); // Пропускаем строку заголовков
                 const tableBody = document.getElementById('table-body');
-                const headerRow = document.createElement('tr');
-                headerRow.innerHTML = `<td colspan="12" style="color: yellow; text-align: center;">
-                    ТЕСТОВАЯ ПРОВЕРКА (Порядок столбцов): ${headers.join(' | ')}
-                </td>`;
-                tableBody.appendChild(headerRow);
                 
-                // Дальше ваш код...
-            })
-            .catch(err => {
-                console.error("Ошибка загрузки:", err);
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    // Проверяем, что строка не пустая и имеет данные
+                    if (cols.length >= 11) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${cols[0]}</td> <td>${cols[1]}</td> <td>Ø ${cols[2]}</td> <td>Ø ${cols[3]}</td> <td>${cols[4]} шт.</td> <td>${cols[5]}</td> <td>${cols[6]}</td> <td>${cols[7]} °C</td> <td>${cols[8]}</td> <td>${cols[9]}</td> <td>${cols[10]}</td> <td>${cols[11]}</td> `;
+                        tableBody.appendChild(tr);
+                    }
+                });
             });
     </script>
+
 </body>
 </html>
