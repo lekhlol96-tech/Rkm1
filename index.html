@@ -56,29 +56,26 @@
     </div>
 
     <script>
-        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv'; // ВСТАВЬТЕ ССЫЛКУ СЮДА
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv'; 
 
         fetch(csvUrl)
             .then(response => response.text())
             .then(data => {
-                const rows = data.split('\n').slice(1);
-                const tableBody = document.getElementById('table-body');
+                const lines = data.split('\n');
+                const headers = lines[0].split(',');
                 
-                rows.forEach(row => {
-                    const cols = row.split(',');
-                    if (cols.length >= 12) {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${cols[1]}</td><td>${cols[2]}</td>
-                            <td>Ø ${cols[3]}</td><td>Ø ${cols[4]}</td>
-                            <td>${cols[5]} шт.</td><td>${cols[6]}</td>
-                            <td>${cols[7]}</td><td>${cols[8]} °C</td>
-                            <td>${cols[9]}</td><td>${cols[10]}</td>
-                            <td>${cols[11]}</td><td>${cols[12]}</td>
-                        `;
-                        tableBody.appendChild(tr);
-                    }
-                });
+                // Выводим заголовки прямо на страницу для проверки
+                const tableBody = document.getElementById('table-body');
+                const headerRow = document.createElement('tr');
+                headerRow.innerHTML = `<td colspan="12" style="color: yellow; text-align: center;">
+                    ТЕСТОВАЯ ПРОВЕРКА (Порядок столбцов): ${headers.join(' | ')}
+                </td>`;
+                tableBody.appendChild(headerRow);
+                
+                // Дальше ваш код...
+            })
+            .catch(err => {
+                console.error("Ошибка загрузки:", err);
             });
     </script>
 </body>
