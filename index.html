@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Журнал данных</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Производственный журнал</h1>
+    <div id="table-container">Загрузка данных...</div>
+
+    <script>
+        // Вставьте сюда вашу ссылку из Google Таблицы (формат CSV)
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/1V-wB_LtL8X8hJremKi5gKs_gPHyYMsEwbmLSjqOclxU/edit?usp=drivesdk';
+
+        fetch(csvUrl)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');
+                let html = '<table>';
+                rows.forEach(row => {
+                    html += '<tr>';
+                    row.split(',').forEach(cell => {
+                        html += `<td>${cell}</td>`;
+                    });
+                    html += '</tr>';
+                });
+                html += '</table>';
+                document.getElementById('table-container').innerHTML = html;
+            });
+    </script>
+</body>
+</html>
