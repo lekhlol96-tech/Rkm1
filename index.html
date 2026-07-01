@@ -61,28 +61,31 @@
     fetch(csvUrl)
         .then(response => response.text())
         .then(data => {
-            const rows = data.split('\n').filter(row => row.trim() !== ''); 
+            const rows = data.split('\n');
             const tableBody = document.getElementById('table-body');
             
-            // --- ВСТАВЛЯЕМ ВАШ НОВЫЙ ЦИКЛ СЮДА ---
             for (let i = 1; i < rows.length; i++) {
                 const cols = rows[i].split(',');
+                
+                // 1. ПРОВЕРКА: если строка совсем пустая (нет даты или заказчика), просто пропускаем её
+                if (!cols[0] && !cols[1]) continue;
+
                 const tr = document.createElement('tr');
 
-                // Если в 13-м столбце (индекс 12) написано "Разделитель", рисуем полосу
+                // 2. РАЗДЕЛИТЕЛЬ: если в 13-м столбце (индекс 12) написано "Разделитель"
                 if (cols[12] && cols[12].trim() === "Бойки") {
-                    tr.innerHTML = `<td colspan="12" style="background: rgba(255, 255, 255, 0.3); height: 10px; border: none;"></td>`;
+                    tr.innerHTML = `<td colspan="12" style="background: rgba(255, 255, 255, 0.2); height: 15px; border: none;"></td>`;
                 } else {
-                    // Обычная строка
+                    // 3. ОБЫЧНАЯ СТРОКА
                     tr.innerHTML = `
                         <td>${cols[0] || ''}</td>
                         <td>${cols[1] || ''}</td>
-                        <td>Ø ${cols[2] || ''}</td>
-                        <td>Ø ${cols[3] || ''}</td>
-                        <td>${cols[4] || ''} шт.</td>
+                        <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
+                        <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
+                        <td>${cols[4] ? cols[4] + ' шт.' : ''}</td>
                         <td>${cols[5] || ''}</td>
                         <td>${cols[6] || ''}</td>
-                        <td>${cols[7] || ''} °C</td>
+                        <td>${cols[7] ? cols[7] + ' °C' : ''}</td>
                         <td>${cols[8] || ''} мин.</td>
                         <td>${cols[9] || ''}</td>
                         <td>${cols[10] || ''}</td>
@@ -91,10 +94,10 @@
                 }
                 tableBody.appendChild(tr);
             }
-            // ------------------------------------
         })
-        .catch(error => console.error('Ошибка загрузки данных:', error));
+        .catch(error => console.error('Ошибка:', error));
 </script>
+
 
 
     
