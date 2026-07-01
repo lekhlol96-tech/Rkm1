@@ -45,7 +45,7 @@
                 <tr>
                     <th>Дата</th><th>Заказчик</th><th>Ø Исходный</th><th>Ø Готовый</th>
                     <th>Кол-во</th><th>Подпись</th><th>Марка</th><th>Темп.</th>
-                    <th>Выдержка</th><th>Программа</th><th>Режим</th><th>П</th><th>Бойки</th>
+                    <th>Выдержка</th><th>Программа</th><th>Режим</th><th>П</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -63,33 +63,33 @@
                 
                 for (let i = 1; i < rows.length; i++) {
                     const cols = rows[i].split(',');
-                    if (cols.length < 2) continue; // Пропускаем пустые строки
+                    if (cols.length < 2) continue;
 
-                    // Проверка на разделитель (если 13-й столбец (индекс 12) не пустой)
+                    // Если 13-й столбец (индекс 12) заполнен, рисуем разделитель
                     if (cols[12] && cols[12].trim() !== "") {
                         const dividerRow = document.createElement('tr');
-                        dividerRow.innerHTML = `<td colspan="13" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 15px;">${cols[12]}</td>`;
+                        dividerRow.innerHTML = `<td colspan="12" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 15px;">${cols[12]}</td>`;
                         tableBody.appendChild(dividerRow);
                     } 
-                    
-                    // Обычная строка
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${cols[0] || ''}</td>
-                        <td>${cols[1] || ''}</td>
-                        <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
-                        <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
-                        <td>${cols[4] || ''}</td>
-                        <td>${cols[5] || ''}</td>
-                        <td>${cols[6] || ''}</td>
-                        <td>${cols[7] || ''}</td>
-                        <td>${cols[8] || ''}</td>
-                        <td>${cols[9] || ''}</td>
-                        <td>${cols[10] || ''}</td>
-                        <td>${cols[11] || ''}</td>
-                        <td>${cols[12] || ''}</td>
-                    `;
-                    tableBody.appendChild(tr);
+                    // Иначе рисуем обычную строку (всего 12 столбцов)
+                    else if (cols[0] && cols[0].trim() !== "") {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${cols[0] || ''}</td>
+                            <td>${cols[1] || ''}</td>
+                            <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
+                            <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
+                            <td>${cols[4] || ''}</td>
+                            <td>${cols[5] || ''}</td>
+                            <td>${cols[6] || ''}</td>
+                            <td>${cols[7] || ''}</td>
+                            <td>${cols[8] || ''}</td>
+                            <td>${cols[9] || ''}</td>
+                            <td>${cols[10] || ''}</td>
+                            <td>${cols[11] || ''}</td>
+                        `;
+                        tableBody.appendChild(tr);
+                    }
                 }
             })
             .catch(error => console.error('Ошибка загрузки данных:', error));
