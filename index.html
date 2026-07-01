@@ -4,34 +4,25 @@
     <meta charset="UTF-8">
     <title>Производственный журнал</title>
     <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
-            min-height: 100vh;
+        /* Добавим стили для поиска */
+        #search-input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
+        ::placeholder { color: rgba(255, 255, 255, 0.6); }
+        /* Остальные стили те же */
+        body { margin: 0; padding: 20px; font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%); min-height: 100vh; color: white; display: flex; flex-direction: column; align-items: center; }
         h1 { margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
         .table-container { width: 100%; overflow-x: auto; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            white-space: nowrap;
-        }
+        table { width: 100%; border-collapse: collapse; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 15px; overflow: hidden; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+        th, td { padding: 12px 15px; text-align: center; border-bottom: 1px solid rgba(255, 255, 255, 0.2); white-space: nowrap; }
         th { background-color: rgba(255, 255, 255, 0.2); font-size: 0.9em; }
         tr:hover { background-color: rgba(255, 255, 255, 0.1); }
     </style>
@@ -39,6 +30,9 @@
 <body>
 
     <h1>Производственный журнал</h1>
+    
+    <input type="text" id="search-input" placeholder="🔍 Поиск по любому столбцу...">
+
     <div class="table-container">
         <table id="data-table">
             <thead>
@@ -54,6 +48,7 @@
 
     <script>
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv';
+        const searchInput = document.getElementById('search-input');
 
         fetch(csvUrl)
             .then(response => response.text())
@@ -65,34 +60,33 @@
                     const cols = rows[i].split(',');
                     if (cols.length < 2) continue;
 
-                    // Если 13-й столбец (индекс 12) заполнен, рисуем разделитель
+                    // Если это строка-разделитель "Бойки"
                     if (cols[12] && cols[12].trim() !== "") {
-                        const dividerRow = document.createElement('tr');
-                        dividerRow.innerHTML = `<td colspan="12" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 15px;">${cols[12]}</td>`;
-                        tableBody.appendChild(dividerRow);
-                    } 
-                    // Иначе рисуем обычную строку (всего 12 столбцов)
-                    else if (cols[0] && cols[0].trim() !== "") {
                         const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${cols[0] || ''}</td>
-                            <td>${cols[1] || ''}</td>
-                            <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
-                            <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
-                            <td>${cols[4] || ''}</td>
-                            <td>${cols[5] || ''}</td>
-                            <td>${cols[6] || ''}</td>
-                            <td>${cols[7] || ''}</td>
-                            <td>${cols[8] || ''}</td>
-                            <td>${cols[9] || ''}</td>
-                            <td>${cols[10] || ''}</td>
-                            <td>${cols[11] || ''}</td>
-                        `;
+                        tr.className = 'divider'; // Добавим класс для фильтрации
+                        tr.innerHTML = `<td colspan="12" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 15px;">${cols[12]}</td>`;
+                        tableBody.appendChild(tr);
+                    } else {
+                        // Обычная строка
+                        const tr = document.createElement('tr');
+                        tr.className = 'data-row'; // Добавим класс
+                        tr.innerHTML = `<td>${cols[0]||''}</td><td>${cols[1]||''}</td><td>${cols[2]||''}</td><td>${cols[3]||''}</td><td>${cols[4]||''}</td><td>${cols[5]||''}</td><td>${cols[6]||''}</td><td>${cols[7]||''}</td><td>${cols[8]||''}</td><td>${cols[9]||''}</td><td>${cols[10]||''}</td><td>${cols[11]||''}</td>`;
                         tableBody.appendChild(tr);
                     }
                 }
-            })
-            .catch(error => console.error('Ошибка загрузки данных:', error));
+            });
+
+        // Функция поиска
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#table-body tr');
+            
+            rows.forEach(row => {
+                // Если строка содержит искомый текст, показываем её, иначе прячем
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
     </script>
 </body>
 </html>
