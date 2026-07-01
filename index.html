@@ -50,31 +50,49 @@
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv';
         const searchInput = document.getElementById('search-input');
 
-        fetch(csvUrl)
+                fetch(csvUrl)
             .then(response => response.text())
             .then(data => {
                 const rows = data.split('\n');
                 const tableBody = document.getElementById('table-body');
+                tableBody.innerHTML = ''; // Очищаем тело таблицы перед отрисовкой
                 
                 for (let i = 1; i < rows.length; i++) {
-                    const cols = rows[i].split(',');
-                    if (cols.length < 2) continue;
+                    const rowData = rows[i].trim();
+                    if (!rowData) continue; // ПРОПУСКАЕМ ПУСТЫЕ СТРОКИ
 
-                    // Если это строка-разделитель "Бойки"
+                    const cols = rowData.split(',');
+
+                    // 1. Рисуем разделитель, если поле "Бойки" (индекс 12) не пустое
                     if (cols[12] && cols[12].trim() !== "") {
                         const tr = document.createElement('tr');
-                        tr.className = 'divider'; // Добавим класс для фильтрации
+                        tr.className = 'divider-row';
                         tr.innerHTML = `<td colspan="12" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 15px;">${cols[12]}</td>`;
                         tableBody.appendChild(tr);
-                    } else {
-                        // Обычная строка
+                    } 
+                    // 2. Рисуем обычную строку данных
+                    else {
                         const tr = document.createElement('tr');
-                        tr.className = 'data-row'; // Добавим класс
-                        tr.innerHTML = `<td>${cols[0]||''}</td><td>${cols[1]||''}</td><td>${cols[2]||''}</td><td>${cols[3]||''}</td><td>${cols[4]||''}</td><td>${cols[5]||''}</td><td>${cols[6]||''}</td><td>${cols[7]||''}</td><td>${cols[8]||''}</td><td>${cols[9]||''}</td><td>${cols[10]||''}</td><td>${cols[11]||''}</td>`;
+                        tr.className = 'data-row';
+                        tr.innerHTML = `
+                            <td>${cols[0] || ''}</td>
+                            <td>${cols[1] || ''}</td>
+                            <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
+                            <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
+                            <td>${cols[4] || ''}</td>
+                            <td>${cols[5] || ''}</td>
+                            <td>${cols[6] || ''}</td>
+                            <td>${cols[7] || ''}</td>
+                            <td>${cols[8] || ''}</td>
+                            <td>${cols[9] || ''}</td>
+                            <td>${cols[10] || ''}</td>
+                            <td>${cols[11] || ''}</td>
+                        `;
                         tableBody.appendChild(tr);
                     }
                 }
             });
+
 
         // Функция поиска
         searchInput.addEventListener('input', function() {
