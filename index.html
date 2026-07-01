@@ -16,10 +16,7 @@
             align-items: center;
         }
         h1 { margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .table-container {
-            width: 100%;
-            overflow-x: auto; /* Прокрутка, если таблица широкая */
-        }
+        .table-container { width: 100%; overflow-x: auto; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -47,60 +44,55 @@
             <thead>
                 <tr>
                     <th>Дата</th><th>Заказчик</th><th>Ø Исходный</th><th>Ø Готовый</th>
-                    <th>Кол-во</th><th>Подпись</th><th>Марка</th>
-                    <th>Темп.</th><th>Выдержка</th><th>Программа</th><th>Режим</th><th>П</th>
+                    <th>Кол-во</th><th>Подпись</th><th>Марка</th><th>Темп.</th>
+                    <th>Выдержка</th><th>Программа</th><th>Режим</th><th>П</th><th>Бойки</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
         </table>
     </div>
 
-<script>
-    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv'; 
+    <script>
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv';
 
-    fetch(csvUrl)
-        .then(response => response.text())
-        .then(data => {
-            const rows = data.split('\n');
-            const tableBody = document.getElementById('table-body');
-            
-            for (let i = 1; i < rows.length; i++) {
-    const cols = rows[i].split(',');
-    
-    // Если поле "Бойки" (индекс 12) заполнено, рисуем красивый разделитель
-    if (cols[12] && cols[12].trim() !== "") {
-        const dividerRow = document.createElement('tr');
-        dividerRow.innerHTML = `<td colspan="13" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 10px;">${cols[12]}</td>`;
-        tableBody.appendChild(dividerRow);
-    } 
-    // Иначе рисуем обычную строку
-    else if (cols[0]) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${cols[0]}</td>
-            <td>${cols[1] || ''}</td>
-            <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
-            <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
-            <td>${cols[4] || ''}</td>
-            <td>${cols[5] || ''}</td>
-            <td>${cols[6] || ''}</td>
-            <td>${cols[7] || ''}</td>
-            <td>${cols[8] || ''}</td>
-            <td>${cols[9] || ''}</td>
-            <td>${cols[10] || ''}</td>
-            <td>${cols[11] || ''}</td>
-            <td>${cols[12] || ''}</td>
-        `;
-        tableBody.appendChild(tr);
-    }
-            }
-            
+        fetch(csvUrl)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');
+                const tableBody = document.getElementById('table-body');
+                
+                for (let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(',');
+                    if (cols.length < 2) continue; // Пропускаем пустые строки
 
-        .catch(error => console.error('Ошибка:', error));
-</script>
-
-
-
-    
+                    // Проверка на разделитель (если 13-й столбец (индекс 12) не пустой)
+                    if (cols[12] && cols[12].trim() !== "") {
+                        const dividerRow = document.createElement('tr');
+                        dividerRow.innerHTML = `<td colspan="13" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 15px;">${cols[12]}</td>`;
+                        tableBody.appendChild(dividerRow);
+                    } 
+                    
+                    // Обычная строка
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${cols[0] || ''}</td>
+                        <td>${cols[1] || ''}</td>
+                        <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
+                        <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
+                        <td>${cols[4] || ''}</td>
+                        <td>${cols[5] || ''}</td>
+                        <td>${cols[6] || ''}</td>
+                        <td>${cols[7] || ''}</td>
+                        <td>${cols[8] || ''}</td>
+                        <td>${cols[9] || ''}</td>
+                        <td>${cols[10] || ''}</td>
+                        <td>${cols[11] || ''}</td>
+                        <td>${cols[12] || ''}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                }
+            })
+            .catch(error => console.error('Ошибка загрузки данных:', error));
+    </script>
 </body>
 </html>
