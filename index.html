@@ -68,8 +68,7 @@
         const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGYLU0H2jMcsMZ6-VaCSecnUj66la3RXxKSAMtYftWmwHm3RCH7xRfMNEZN2aBX95kR5q5cLWncJKt/pub?gid=0&single=true&output=csv';
         const searchInput = document.getElementById('search-input');
 
-        function loadData() {
-            // Добавляем timestamp, чтобы браузер не брал старые данные из памяти
+                function loadData() {
             fetch(csvUrl + '&t=' + new Date().getTime())
                 .then(response => response.text())
                 .then(data => {
@@ -79,30 +78,27 @@
                     
                     for (let i = 1; i < rows.length; i++) {
                         const rowData = rows[i].trim();
-                        if (!rowData) continue; // Пропускаем пустые строки
+                        if (!rowData) continue; 
 
                         const cols = rowData.split(',');
 
-                        // Разделитель (если 13-й столбец заполнен)
                         if (cols[12] && cols[12].trim() !== "") {
                             const tr = document.createElement('tr');
                             tr.innerHTML = `<td colspan="12" style="background: #34495e; color: #f1c40f; text-align: center; font-weight: bold; padding: 15px;">${cols[12]}</td>`;
                             tableBody.appendChild(tr);
-                        } 
-                        // Обычная строка
-                        else {
+                        } else {
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
                                 <td>${cols[0] || ''}</td>
                                 <td>${cols[1] || ''}</td>
                                 <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
                                 <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
-                                <td>${cols[4] || ''}</td>
+                                <td>${cols[4] ? cols[4] + ' Шт.' : ''}</td>
                                 <td>${cols[5] || ''}</td>
                                 <td>${cols[6] || ''}</td>
-                                <td>${cols[7] || ''}</td>
-                                <td>${cols[8] || ''}</td>
-                                <td>${cols[9] || ''}</td>
+                                <td>${cols[7] ? cols[7] + ' °С' : ''}</td>
+                                <td>${cols[8] ? cols[8] + ' Мин.' : ''}</td>
+                                <td>${cols[9] ? '№ ' + cols[9] : ''}</td>
                                 <td>${cols[10] || ''}</td>
                                 <td>${cols[11] || ''}</td>
                             `;
