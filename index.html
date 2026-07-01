@@ -89,19 +89,19 @@
                         } else {
                             const tr = document.createElement('tr');
                             tr.innerHTML = `
-                                <td>${cols[0] || ''}</td>
-                                <td>${cols[1] || ''}</td>
-                                <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
-                                <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
-                                <td>${cols[4] ? cols[4] + ' Шт.' : ''}</td>
-                                <td>${cols[5] || ''}</td>
-                                <td>${cols[6] || ''}</td>
-                                <td>${cols[7] ? cols[7] + ' °С' : ''}</td>
-                                <td>${cols[8] ? cols[8] + ' Мин.' : ''}</td>
-                                <td>${cols[9] ? '№ ' + cols[9] : ''}</td>
-                                <td>${cols[10] || ''}</td>
-                                <td>${cols[11] || ''}</td>
-                            `;
+    <td>${cols[0] || ''}</td>
+    <td>${cols[1] || ''}</td>
+    <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
+    <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
+    <td>${cols[4] ? cols[4] + ' Шт.' : ''}</td>
+    <td>${cols[5] || ''}</td>
+    <td>${cols[6] || ''}</td>
+    <td>${cols[7] ? cols[7] + ' °С' : ''}</td>
+    <td>${cols[8] ? cols[8] + ' Мин.' : ''}</td>
+    <td>${cols[9] ? '№ ' + cols[9] : ''}</td>
+    <td>${cols[10] || ''}</td>
+    <td>${cols[11] ? 'П ' + cols[11] : ''}</td> `;
+
                             tableBody.appendChild(tr);
                         }
                     }
