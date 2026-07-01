@@ -65,36 +65,39 @@
             const tableBody = document.getElementById('table-body');
             
             for (let i = 1; i < rows.length; i++) {
-                const cols = rows[i].split(',');
-                
-                // 1. ПРОВЕРКА: если строка совсем пустая (нет даты или заказчика), просто пропускаем её
-                if (!cols[0] && !cols[1]) continue;
+    const cols = rows[i].split(',');
+    
+    // Если в строке есть данные "Бойки" (например, это 13-й столбец, индекс 12)
+    if (cols[12] && cols[12].trim() !== "") {
+        const dividerRow = document.createElement('tr');
+        dividerRow.innerHTML = `
+            <td colspan="12" style="background: rgba(255, 255, 255, 0.15); color: #FFD700; font-weight: bold; text-align: center; padding: 10px; border-bottom: 2px solid #FFD700;">
+                ${cols[12]}
+            </td>
+        `;
+        tableBody.appendChild(dividerRow);
+    } 
+    // Если это обычная запись, рисуем её
+    else if (cols[0] || cols[1]) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${cols[0] || ''}</td>
+            <td>${cols[1] || ''}</td>
+            <td>Ø ${cols[2] || ''}</td>
+            <td>Ø ${cols[3] || ''}</td>
+            <td>${cols[4] || ''} шт.</td>
+            <td>${cols[5] || ''}</td>
+            <td>${cols[6] || ''}</td>
+            <td>${cols[7] || ''} °C</td>
+            <td>${cols[8] || ''} мин.</td>
+            <td>${cols[9] || ''}</td>
+            <td>${cols[10] || ''}</td>
+            <td>${cols[11] || ''}</td>
+        `;
+        tableBody.appendChild(tr);
+    }
+}
 
-                const tr = document.createElement('tr');
-
-                // 2. РАЗДЕЛИТЕЛЬ: если в 13-м столбце (индекс 12) написано "Разделитель"
-                if (cols[12] && cols[12].trim() === "Бойки") {
-                    tr.innerHTML = `<td colspan="12" style="background: rgba(255, 255, 255, 0.2); height: 15px; border: none;"></td>`;
-                } else {
-                    // 3. ОБЫЧНАЯ СТРОКА
-                    tr.innerHTML = `
-                        <td>${cols[0] || ''}</td>
-                        <td>${cols[1] || ''}</td>
-                        <td>${cols[2] ? 'Ø ' + cols[2] : ''}</td>
-                        <td>${cols[3] ? 'Ø ' + cols[3] : ''}</td>
-                        <td>${cols[4] ? cols[4] + ' шт.' : ''}</td>
-                        <td>${cols[5] || ''}</td>
-                        <td>${cols[6] || ''}</td>
-                        <td>${cols[7] ? cols[7] + ' °C' : ''}</td>
-                        <td>${cols[8] || ''} мин.</td>
-                        <td>${cols[9] || ''}</td>
-                        <td>${cols[10] || ''}</td>
-                        <td>${cols[11] || ''}</td>
-                    `;
-                }
-                tableBody.appendChild(tr);
-            }
-        })
         .catch(error => console.error('Ошибка:', error));
 </script>
 
